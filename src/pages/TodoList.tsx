@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getTodos, createTodo, deleteTodo, updateTodo } from '../api/todoApi';
-import Todo from '../types/todoTypes';
+import { Todo } from '../types/todoTypes';
 import TodoDetail from '../components/TodoDetail';
 import './TodoList.css';
 
@@ -17,7 +17,7 @@ const TodoList = () => {
       fetchTodos();
    }, []);
 
-   const handleAddTodo = async (e: React.FormEvent<HTMLFormElement>) => {
+   const handleAddTodo = async (e: React.FormEvent) => {
       e.preventDefault();
       const title = (e.target as HTMLFormElement).title.value;
       const content = (e.target as HTMLFormElement).content.value;
@@ -25,7 +25,7 @@ const TodoList = () => {
       if (title.trim() === '' || content.trim() === '') return;
 
       try {
-         const createdTodo = await createTodo(title, content);
+         const createdTodo: Todo = await createTodo(title, content);
          setTodos((prev) => [...prev, createdTodo.data]);
          e.target.reset();
       } catch (err) {
