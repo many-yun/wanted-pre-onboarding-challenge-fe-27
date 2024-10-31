@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getTodos, createTodo, deleteTodo, updateTodo } from '../api/todoApi';
-import { Todo } from '../types/todoTypes';
+import Todo from '../types/todoTypes';
 import TodoDetail from '../components/TodoDetail';
 import './TodoList.css';
 
 const TodoList = () => {
-   const [todos, setTodos] = useState([]);
-   const [selectedTodo, setSelectedTodo] = useState(null);
+   const [todos, setTodos] = useState<Todo[]>([]);
+   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
 
    useEffect(() => {
       const fetchTodos = async () => {
@@ -17,10 +17,10 @@ const TodoList = () => {
       fetchTodos();
    }, []);
 
-   const handleAddTodo = async (e) => {
+   const handleAddTodo = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      const title = e.target.title.value;
-      const content = e.target.content.value;
+      const title = (e.target as HTMLFormElement).title.value;
+      const content = (e.target as HTMLFormElement).content.value;
 
       if (title.trim() === '' || content.trim() === '') return;
 
@@ -41,7 +41,7 @@ const TodoList = () => {
       try {
          const updatedTodo = await updateTodo(id, title, content);
          setTodos((prev) => prev.map((todo) => (todo.id === updatedTodo.data.id ? updatedTodo.data : todo)));
-         setSelectedTodo(updatedTodo);
+         setSelectedTodo(updatedTodo.data);
       } catch (err) {
          console.error(err);
       }
@@ -65,7 +65,7 @@ const TodoList = () => {
             <h2>Todo List</h2>
             <form onSubmit={handleAddTodo}>
                <input name="title" type="text" placeholder="Title" required />
-               <textarea name="content" type="text" placeholder="Content" required />
+               <textarea name="content" placeholder="Content" required />
                <button type="submit">Add Todo</button>
             </form>
             <ul>
